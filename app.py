@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import streamlit as st
 from PIL import Image
-import base64
+import io
 
 def load_css():
     st.markdown("""
@@ -101,8 +101,17 @@ if uploaded_file is not None:
     st.image(sketch, caption="Pencil Sketch", use_column_width=True)
 
     # Provide a download button for the pencil sketch
+    # Save the sketch to a BytesIO object
     sketch_pil = Image.fromarray(sketch)
-    st.download_button(label="📥 Download Pencil Sketch", data=sketch_pil.tobytes(), file_name="pencil_sketch.jpg", mime="image/jpeg")
+    buf = io.BytesIO()
+    sketch_pil.save(buf, format="JPEG")
+    byte_data = buf.getvalue()
+    st.download_button(
+        label="📥 Download Pencil Sketch",
+        data=byte_data,
+        file_name="pencil_sketch.jpg",
+        mime="image/jpeg"
+    )
 
 # Add a footer
 st.markdown("""
